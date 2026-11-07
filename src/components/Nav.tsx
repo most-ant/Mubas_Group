@@ -26,23 +26,25 @@ export default function Nav({ admin, signedIn = admin }: { admin: boolean; signe
         <div className="row" style={{ alignItems: 'center' }}>
           {signedIn && <NotificationBell />}
 
-          {admin ? (
-            <>
-              <Link href="/admin" className="btn sm ghost">Admin</Link>
+          <div className="nav-actions-desktop" style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+            {admin ? (
+              <>
+                <Link href="/admin" className="btn sm ghost">Admin</Link>
+                <form action={logout} style={{ margin: 0 }}>
+                  <button className="btn sm ghost" type="submit">Log out</button>
+                </form>
+              </>
+            ) : signedIn ? (
               <form action={logout} style={{ margin: 0 }}>
                 <button className="btn sm ghost" type="submit">Log out</button>
               </form>
-            </>
-          ) : signedIn ? (
-            <form action={logout} style={{ margin: 0 }}>
-              <button className="btn sm ghost" type="submit">Log out</button>
-            </form>
-          ) : (
-            <>
-              <Link href="/login" className="btn sm ghost">Sign in</Link>
-              <Link href="/jobs" className="btn sm">Join us</Link>
-            </>
-          )}
+            ) : (
+              <>
+                <Link href="/login" className="btn sm ghost">Sign in</Link>
+                <Link href="/jobs" className="btn sm">Join us</Link>
+              </>
+            )}
+          </div>
 
           <button
             type="button"
