@@ -3,9 +3,9 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { replyToMessage } from '@/app/actions'
 
-export default function ReplyMessageForm({ id, existingReply }: { id: string; existingReply: string | null }) {
+export default function ReplyMessageForm({ id, existingReply }: { id: string; existingReply?: string | null }) {
   const router = useRouter()
-  const [reply, setReply] = useState(existingReply ?? '')
+  const [reply, setReply] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
@@ -21,6 +21,7 @@ export default function ReplyMessageForm({ id, existingReply }: { id: string; ex
       if (res && 'error' in res && res.error) {
         setError(res.error)
       } else {
+        setReply('')
         setSuccess(true)
         router.refresh()
         setTimeout(() => setSuccess(false), 3000)
@@ -52,15 +53,32 @@ export default function ReplyMessageForm({ id, existingReply }: { id: string; ex
           marginTop: 0,
         }}
       />
-      <div style={{ display: 'flex', gap: 8, marginTop: 8, alignItems: 'center' }}>
+      <div style={{ display: 'flex', gap: 12, marginTop: 8, alignItems: 'center', flexWrap: 'wrap' }}>
         <button
           type="submit"
           className="btn sm"
           disabled={loading || !reply.trim()}
           style={{ fontSize: 13 }}
         >
-          {loading ? 'Sending…' : existingReply ? 'Update reply' : 'Send reply'}
+          {loading ? 'Sending…' : 'Send reply'}
         </button>
+        {existingReply && !reply && (
+          <button
+            type="button"
+            onClick={() => setReply(existingReply)}
+            style={{
+              background: 'none',
+              border: 'none',
+              padding: 0,
+              color: 'var(--muted)',
+              fontSize: 12,
+              cursor: 'pointer',
+              textDecoration: 'underline',
+            }}
+          >
+            Load previous reply to edit
+          </button>
+        )}
         {error && <span style={{ color: '#c0392b', fontSize: 12 }}>{error}</span>}
         {success && <span style={{ color: 'var(--green)', fontSize: 12, fontWeight: 700 }}>✓ Replied</span>}
       </div>

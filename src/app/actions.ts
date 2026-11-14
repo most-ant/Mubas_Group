@@ -31,13 +31,19 @@ export async function signup(fd: FormData) {
   }
 
   const h = await headers()
-  const origin = h.get('origin') || (h.get('host') ? `${h.get('x-forwarded-proto') || 'https'}://${h.get('host')}` : '')
+  const forwardedHost = h.get('x-forwarded-host')
+  const host = forwardedHost || h.get('host')
+  const proto = h.get('x-forwarded-proto') || 'https'
+  const fallbackOrigin = process.env.NEXT_PUBLIC_SITE_URL || 'https://mubas-group.vercel.app'
+  const origin = h.get('origin') || (host ? `${proto}://${host}` : fallbackOrigin)
 
   const s = await createClient()
   const { data, error } = await s.auth.signUp({
     email,
     password,
-    ...(origin ? { options: { emailRedirectTo: `${origin}/auth/callback` } } : {}),
+    options: {
+      emailRedirectTo: `${origin}/auth/callback`,
+    },
   })
   if (error) return { error: error.message }
   if (data.session) redirect('/')
