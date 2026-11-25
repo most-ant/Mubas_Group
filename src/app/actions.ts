@@ -259,6 +259,122 @@ export async function deleteTeamMember(id: string, photo?: string | null) {
   }
 }
 
+export async function createCollaborator(fd: FormData) {
+  try {
+    const s = await createClient()
+    await requireAdmin(s)
+
+    const name = (fd.get('name') as string)?.trim() || null
+    const caption = (fd.get('caption') as string)?.trim() || null
+
+    if (!caption && !name) {
+      return { error: 'Please provide at least a name or a caption for the collaborator.' }
+    }
+
+    let image: string | null = null
+    const file = fd.get('image') as File | null
+    if (file && file.size > 0) {
+      const rawExt = file.name.split('.').pop()?.toLowerCase() || 'jpg'
+      const ext = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg'].includes(rawExt) ? rawExt : 'jpg'
+      const path = `collaborators/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
+      const { error } = await s.storage.from('gallery').upload(path, file, { upsert: true })
+      if (error) {
+        if (error.message.toLowerCase().includes('bucket not found') || error.message.includes('The resource was not found')) {
+          return {
+            error: 'Storage bucket "gallery" does not exist in Supabase. Please create the public "gallery" bucket in Supabase.',
+          }
+        }
+        return { error: `Image upload failed: ${error.message}` }
+      }
+      image = path
+    }
+
+    const { error } = await s.from('collaborators').insert({
+      name,
+      caption,
+      image,
+    })
+    if (error) {
+      if (error.code === 'PGRST205' || error.message.includes('Could not find the table')) {
+        return {
+          error: 'Table "collaborators" does not exist in Supabase yet. Please run the SQL migration in supabase/migration-collaborators.sql in your Supabase SQL editor.',
+        }
+      }
+      return { error: `Database error: ${error.message}` }
+    }
+
+    revalidatePath('/')
+    revalidatePath('/admin/collaborators')
+    revalidatePath('/admin')
+    return { success: true }
+  } catch (err: unknown) {
+    return { error: err instanceof Error ? err.message : 'Failed to create collaborator.' }
+  }
+}
+
+export async function updateCollaborator(id: string, fd: FormData) {
+  try {
+    const s = await createClient()
+    await requireAdmin(s)
+
+    const name = (fd.get('name') as string)?.trim() || null
+    const caption = (fd.get('caption') as string)?.trim() || null
+    let image = ((fd.get('existing_image') as string)?.trim()) || null
+
+    const file = fd.get('image') as File | null
+    if (file && file.size > 0) {
+      const rawExt = file.name.split('.').pop()?.toLowerCase() || 'jpg'
+      const ext = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg'].includes(rawExt) ? rawExt : 'jpg'
+      const path = `collaborators/${id}-${Date.now()}.${ext}`
+      const { error } = await s.storage.from('gallery').upload(path, file, { upsert: true })
+      if (error) {
+        return { error: `Image upload failed: ${error.message}` }
+      }
+      image = path
+    }
+
+    const { error } = await s.from('collaborators').upsert({
+      id,
+      name,
+      caption,
+      image,
+    })
+    if (error) return { error: error.message }
+
+    revalidatePath('/')
+    revalidatePath('/admin/collaborators')
+    revalidatePath('/admin')
+    return { success: true }
+  } catch (err: unknown) {
+    return { error: err instanceof Error ? err.message : 'Failed to update collaborator.' }
+  }
+}
+
+export async function deleteCollaborator(id: string, image?: string | null) {
+  try {
+    const s = await createClient()
+    await requireAdmin(s)
+
+    if (image) {
+      try {
+        await s.storage.from('gallery').remove([image])
+      } catch {
+        // Non-fatal if image does not exist in storage
+      }
+    }
+
+    const { error } = await s.from('collaborators').delete().eq('id', id)
+    if (error) return { error: error.message }
+
+    revalidatePath('/')
+    revalidatePath('/admin/collaborators')
+    revalidatePath('/admin')
+    return { success: true }
+  } catch (err: unknown) {
+    return { error: err instanceof Error ? err.message : 'Failed to delete collaborator.' }
+  }
+}
+
 export async function uploadGalleryPhoto(fd: FormData) {
   try {
     const s = await createClient()

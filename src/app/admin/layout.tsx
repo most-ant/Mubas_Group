@@ -19,6 +19,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         <Link href="/admin" style={{ color: '#f3efe6', textDecoration: 'none', fontWeight: 500 }}>Dashboard</Link>
         <Link href="/admin/jobs" style={{ color: '#f3efe6', textDecoration: 'none', fontWeight: 500 }}>Jobs</Link>
         <Link href="/admin/team" style={{ color: '#f3efe6', textDecoration: 'none', fontWeight: 500 }}>Team</Link>
+        <Link href="/admin/collaborators" style={{ color: '#f3efe6', textDecoration: 'none', fontWeight: 500 }}>Collaborators</Link>
         <Link href="/admin/gallery" style={{ color: '#f3efe6', textDecoration: 'none', fontWeight: 500 }}>Gallery</Link>
         <Link href="/admin/applications" style={{ color: '#f3efe6', textDecoration: 'none', fontWeight: 500 }}>Applications</Link>
         <Link href="/admin/messages" style={{ color: '#f3efe6', textDecoration: 'none', fontWeight: 500 }}>Messages</Link>

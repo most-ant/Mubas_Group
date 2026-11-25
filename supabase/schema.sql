@@ -49,6 +49,24 @@ drop policy if exists "team write admin" on public.team;
 create policy "team write admin" on public.team
   for all using (public.is_admin()) with check (public.is_admin());
 
+-- ---------- COLLABORATORS ----------
+create table if not exists public.collaborators (
+  id          uuid primary key default gen_random_uuid(),
+  name        text,
+  caption     text,
+  image       text,
+  created_at  timestamptz not null default now()
+);
+alter table public.collaborators enable row level security;
+
+drop policy if exists "collaborators read all" on public.collaborators;
+create policy "collaborators read all" on public.collaborators
+  for select using (true);
+
+drop policy if exists "collaborators write admin" on public.collaborators;
+create policy "collaborators write admin" on public.collaborators
+  for all using (public.is_admin()) with check (public.is_admin());
+
 -- ---------- JOBS ----------
 create table if not exists public.jobs (
   id          uuid primary key default gen_random_uuid(),
@@ -143,12 +161,14 @@ grant usage on schema public to anon, authenticated;
 -- Public (anon & authenticated) read access
 grant select on public.jobs to anon, authenticated;
 grant select on public.team to anon, authenticated;
+grant select on public.collaborators to anon, authenticated;
 grant select on public.gallery to anon, authenticated;
 grant insert on public.applications to anon, authenticated;
 
 -- Authenticated write access (controlled by RLS policies above)
 grant all on public.jobs to authenticated;
 grant all on public.team to authenticated;
+grant all on public.collaborators to authenticated;
 grant all on public.gallery to authenticated;
 grant all on public.applications to authenticated;
 grant select on public.user_roles to authenticated;

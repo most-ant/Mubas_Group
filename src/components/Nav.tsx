@@ -16,10 +16,10 @@ export default function Nav({ admin, signedIn = admin }: { admin: boolean; signe
 
         <ul>
           <li><Link href="/#services">Services</Link></li>
-          <li><Link href="/#work">Work</Link></li>
           <li><Link href="/#chef">Our Chef</Link></li>
           <li><Link href="/#team">Team</Link></li>
           <li><Link href="/#gallery">Gallery</Link></li>
+          <li><Link href="/#collaborators">Collaborators</Link></li>
           <li><Link href="/jobs">Jobs</Link></li>
         </ul>
 
@@ -86,10 +86,10 @@ export default function Nav({ admin, signedIn = admin }: { admin: boolean; signe
           className="mobile-menu"
         >
           <Link href="/#services" onClick={() => setMenuOpen(false)} style={{ color: '#f3efe6', textDecoration: 'none', fontSize: 18 }}>Services</Link>
-          <Link href="/#work" onClick={() => setMenuOpen(false)} style={{ color: '#f3efe6', textDecoration: 'none', fontSize: 18 }}>Work</Link>
           <Link href="/#chef" onClick={() => setMenuOpen(false)} style={{ color: '#f3efe6', textDecoration: 'none', fontSize: 18 }}>Our Chef</Link>
           <Link href="/#team" onClick={() => setMenuOpen(false)} style={{ color: '#f3efe6', textDecoration: 'none', fontSize: 18 }}>Team</Link>
           <Link href="/#gallery" onClick={() => setMenuOpen(false)} style={{ color: '#f3efe6', textDecoration: 'none', fontSize: 18 }}>Gallery</Link>
+          <Link href="/#collaborators" onClick={() => setMenuOpen(false)} style={{ color: '#f3efe6', textDecoration: 'none', fontSize: 18 }}>Collaborators</Link>
           <Link href="/jobs" onClick={() => setMenuOpen(false)} style={{ color: '#f3efe6', textDecoration: 'none', fontSize: 18 }}>Jobs</Link>
           {signedIn && (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '4px 0' }}>

@@ -3,16 +3,18 @@ import Link from 'next/link'
 
 export default async function AdminHome() {
   const s = await createClient()
-  const [jobs, team, gal, apps, msgs] = await Promise.all([
+  const [jobs, team, gal, apps, msgs, collaborators] = await Promise.all([
     s.from('jobs').select('*', { count: 'exact', head: true }),
     s.from('team').select('*', { count: 'exact', head: true }),
     s.from('gallery').select('*', { count: 'exact', head: true }),
     s.from('applications').select('*', { count: 'exact', head: true }),
     s.from('messages').select('*', { count: 'exact', head: true }),
+    s.from('collaborators').select('*', { count: 'exact', head: true }),
   ])
   const cards = [
     { label: 'Jobs', value: jobs.count ?? 0, href: '/admin/jobs' },
     { label: 'Team', value: team.count ?? 0, href: '/admin/team' },
+    { label: 'Collaborators', value: collaborators.count ?? 0, href: '/admin/collaborators' },
     { label: 'Photos', value: gal.count ?? 0, href: '/admin/gallery' },
     { label: 'Applications', value: apps.count ?? 0, href: '/admin/applications' },
     { label: 'Messages', value: msgs.count ?? 0, href: '/admin/messages' },

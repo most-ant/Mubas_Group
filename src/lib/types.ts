@@ -1,4 +1,5 @@
 export type TeamMember = { id: string; name: string | null; role: string | null; bio: string | null; photo: string | null }
+export type Collaborator = { id: string; name: string | null; caption: string | null; image: string | null; created_at?: string }
 export type Job = { id: string; title: string; type: string | null; location: string | null; deadline: string | null; description: string | null; created_at: string }
 export type GalleryItem = { id: string; asset: string | null; caption: string | null; credit: string | null; is_official: boolean; status: 'pending' | 'approved'; uploaded_by: string | null; created_at: string }
 export type Application = { id: string; name: string; email: string; phone: string | null; job_id: string | null; job_title: string; message: string; status: 'pending' | 'received'; user_id?: string | null; created_at: string }
