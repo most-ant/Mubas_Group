@@ -101,7 +101,7 @@ export default async function AdminCollaborators() {
             </div>
           </div>
 
-          <CollaboratorEditForm collaborator={c} getImageUrl={resolveImageUrl} />
+          <CollaboratorEditForm collaborator={c} currentImageUrl={resolveImageUrl(c.image)} />
 
           <div style={{ marginTop: 14, borderTop: '1px solid var(--line)', paddingTop: 14 }}>
             <DeleteButton

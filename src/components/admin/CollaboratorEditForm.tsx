@@ -6,10 +6,10 @@ import type { Collaborator } from '@/lib/types'
 
 export default function CollaboratorEditForm({
   collaborator,
-  getImageUrl,
+  currentImageUrl,
 }: {
   collaborator: Collaborator
-  getImageUrl: (p: string | null) => string
+  currentImageUrl?: string
 }) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
@@ -81,11 +81,11 @@ export default function CollaboratorEditForm({
             style={{ width: 140, height: 90, borderRadius: 10, objectFit: 'cover', border: '2px solid var(--amber)' }}
           />
         </div>
-      ) : collaborator.image ? (
+      ) : currentImageUrl ? (
         <div style={{ margin: '10px 0' }}>
           <div style={{ fontSize: 12, color: 'var(--muted)', marginBottom: 4 }}>Current Image:</div>
           <img
-            src={getImageUrl(collaborator.image)}
+            src={currentImageUrl}
             alt={collaborator.name ?? 'Current'}
             style={{ width: 140, height: 90, borderRadius: 10, objectFit: 'cover', border: '1px solid var(--line)' }}
           />
